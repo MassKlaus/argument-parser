@@ -6,13 +6,11 @@ const std = @import("std");
 // the rest are positinal arguments
 // subcommands are something else to worry about later
 pub const ArgsParser = struct {
-    args: []const [:0]u8,
+    args: []const [:0]const u8,
     index: usize = 1, // Start right after the name, this is used to track our last positional argument check
     passthrough_index: ?usize,
 
-    pub fn init(allocator: std.mem.Allocator) !@This() {
-        const args: []const [:0]u8 = try std.process.argsAlloc(allocator);
-
+    pub fn init(args: []const [:0]const u8) !@This() {
         const index: ?usize = index_finder: for (args, 0..) |arg, i| {
             if (std.mem.eql(u8, arg, "--")) {
                 break :index_finder i;
